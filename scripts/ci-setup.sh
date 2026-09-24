@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install pixi + Mojo 1.0.0 for this repo.
+# Install pixi + Mojo 1.1.0 for this repo.
 # The Modular conda channel may require PREFIX_API_KEY.
 # Never commit .env. PREFIX_API_KEY stays in CI secrets or a local .env.
 set -euo pipefail
@@ -26,7 +26,7 @@ if ! command -v pixi >/dev/null 2>&1; then
 fi
 
 echo "pixi: $(pixi --version)"
-echo "pin: mojo == 1.0.0"
+echo "pin: mojo == 1.1.0"
 
 if ! pixi install; then
   echo "pixi install failed." >&2

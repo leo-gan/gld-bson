@@ -19,7 +19,7 @@ Mojo. They do not wrap libbson or any other C, C++, or Rust BSON library.
 
     ---
 
-    Install Mojo 1.0.0 with pixi, write a JSON Schema, generate Mojo, run the
+    Install Mojo 1.1.0 with pixi, write a JSON Schema, generate Mojo, run the
     tests, and publish this site.
 
     [:octicons-arrow-right-24: Open Instructions](instructions.md)
