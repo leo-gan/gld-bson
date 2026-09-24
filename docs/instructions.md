@@ -1,7 +1,7 @@
 # Instructions
 
 These steps install the library, generate Mojo from a JSON Schema, and run
-the tests. The runtime needs **Mojo 1.0.0**. Code generation is a Mojo
+the tests. The runtime needs **Mojo 1.1.0**. Code generation is a Mojo
 program in this repository. It does not shell out to another BSON library.
 
 ---
@@ -9,7 +9,7 @@ program in this repository. It does not shell out to another BSON library.
 ## Install
 
 1. Install [pixi](https://pixi.sh/).
-2. Clone the repository and install the Mojo 1.0.0 pin.
+2. Clone the repository and install the Mojo 1.1.0 pin.
 
 ```bash
 git clone https://github.com/leo-gan/gld-bson.git

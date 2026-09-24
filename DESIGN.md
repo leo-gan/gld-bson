@@ -8,7 +8,7 @@
 | **Status** | Shipped as 0.1.0 |
 | **Target repo** | `/home/leo/PycharmProjects/GLD/gld-bson` |
 | **License** | MIT, Copyright (c) 2026 Leonid Ganeline |
-| **Mojo pin** | `mojo == 1.0.0` |
+| **Mojo pin** | `mojo == 1.1.0` |
 | **Spec** | [bsonspec.org](https://bsonspec.org/spec.html), MongoDB Extended JSON v2 |
 
 ## Summary
