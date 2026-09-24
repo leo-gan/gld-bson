@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "Message": {
+      "type": "object",
+      "properties": {
+        "f_bool": {"type": "boolean"},
+        "f_int32": {"bsonType": "int"},
+        "f_int64": {"bsonType": "long"},
+        "f_float64": {"bsonType": "double"},
+        "f_string": {"type": "string"},
+        "f_bool_2": {"type": "boolean"},
+        "f_int32_2": {"bsonType": "int"},
+        "f_string_2": {"type": "string"}
+      }
+    },
+    "DocumentMeta": {
+      "type": "object",
+      "properties": {
+        "region": {"type": "string"},
+        "version": {"bsonType": "int"}
+      }
+    },
+    "DocumentItem": {
+      "type": "object",
+      "properties": {
+        "sku": {"type": "string"},
+        "qty": {"bsonType": "int"},
+        "price_minor": {"bsonType": "long"}
+      }
+    },
+    "Document": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string"},
+        "status": {"bsonType": "int"},
+        "meta": {"$ref": "#/$defs/DocumentMeta"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/DocumentItem"}}
+      }
+    },
+    "Telemetry": {
+      "type": "object",
+      "properties": {
+        "source": {"type": "string"},
+        "ts": {"bsonType": "long"},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "values": {"type": "array", "items": {"bsonType": "double"}}
+      }
+    },
+    "Strings": {
+      "type": "object",
+      "properties": {
+        "items": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "EventAttr": {
+      "type": "object",
+      "properties": {
+        "key": {"type": "string"},
+        "value": {"type": "string"}
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "event_id": {"type": "string"},
+        "event_type": {"type": "string"},
+        "occurred_at": {"bsonType": "long"},
+        "producer": {"type": "string"},
+        "attrs": {"type": "array", "items": {"$ref": "#/$defs/EventAttr"}}
+      }
+    }
+  }
+}
