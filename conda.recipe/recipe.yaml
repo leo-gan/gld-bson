@@ -10,7 +10,7 @@ source:
   path: ..
 
 build:
-  number: 0
+  number: 1
   script:
     - mkdir -p ${{ PREFIX }}/lib/mojo ${{ PREFIX }}/bin
     - mojo precompile -I src src/wire -o ${{ PREFIX }}/lib/mojo/wire.mojoc
