@@ -1,5 +1,7 @@
 # mojo-bson
 
+[Serialization](https://leo-gan.github.io/serialization/) is the hub for the theory, the history, and the benchmarks.
+
 A from-scratch [BSON](https://bsonspec.org/spec.html) implementation for
 [Mojo](https://mojolang.org/). The runtime and the code generator are written
 in Mojo. They do not wrap, link, or vendor libbson, or any other C, C++, or
