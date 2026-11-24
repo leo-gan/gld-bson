@@ -124,20 +124,27 @@ struct WireWriter(Movable):
         self.write_byte(Byte(0))
 
     def write_index_cstring(mut self, n: Int):
-        if n == 0:
-            self.write_byte(Byte(48))
-            self.write_byte(Byte(0))
-            return
-        var tmp = List[Byte]()
+        # Array keys are "0","1",… Digits go straight into the buffer.
+        # A temporary list per element dominated telemetry encode.
         var x = n
-        while x > 0:
-            tmp.append(Byte(48 + (x % 10)))
-            x //= 10
-        var i = len(tmp)
+        if x < 0:
+            x = 0
+        var nd = 1
+        var probe = x
+        while probe >= 10:
+            nd += 1
+            probe = probe // 10
+        self.ensure(nd + 1)
+        var end = self.pos + nd
+        var i = nd
+        var rest = x
         while i > 0:
             i -= 1
-            self.write_byte(tmp[i])
-        self.write_byte(Byte(0))
+            self.buf[self.pos + i] = Byte(48 + (rest % 10))
+            rest = rest // 10
+        self.pos = end
+        self.buf[self.pos] = Byte(0)
+        self.pos += 1
 
     def write_bson_string(mut self, s: String):
         var n = s.byte_length() + 1
