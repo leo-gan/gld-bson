@@ -95,6 +95,11 @@ struct WireReader[origin: ImmOrigin](Movable):
         self._need(n)
         self.pos += n
 
+    def skip_cstring(mut self) raises DecodeError:
+        """Drop one cstring. Array indexes are not kept."""
+        self._scan_nul()
+        self.pos += 1
+
     def read_cstring(mut self) raises DecodeError -> String:
         var start = self.pos
         self._scan_nul()
