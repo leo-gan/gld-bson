@@ -27,6 +27,28 @@ def main() raises:
 `encode` asks the struct for its byte count, allocates that many bytes, and
 writes once. `decode` reads one document and rejects trailing bytes.
 
+## Keys without a temporary string
+
+`write_*_lit` and `load_key` / `key_loaded` take a `StaticString`. The writer
+copies the key bytes straight into the document. The reader keeps one key
+buffer and reuses it for every field, so a scan does not allocate a `String`
+per key. Value strings are still copied.
+
+```mojo
+var w = WireWriter(capacity=64)
+var at = w.begin_document()
+w.write_i32_lit("a", 1)
+w.end_document(at)
+var raw = w^.finish()
+var r = WireReader(Span(raw))
+var end = r.enter_document()
+var typ = r.read_u8()
+r.load_key()
+if r.key_loaded("a") and typ == 0x10:
+    print(r.read_i32())
+_ = end
+```
+
 ## A document without a schema
 
 ```mojo

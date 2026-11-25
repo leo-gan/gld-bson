@@ -40,11 +40,42 @@ struct WireReader[origin: ImmOrigin](Movable):
     var data: Span[Byte, Self.origin]
     var pos: Int
     var end: Int
+    var key_buf: List[Byte]
+    var key_len: Int
 
     def __init__(out self, data: Span[Byte, Self.origin]):
         self.data = data
         self.pos = 0
         self.end = len(data)
+        self.key_buf = List[Byte](unsafe_uninit_length=32)
+        self.key_len = 0
+
+    def load_key(mut self) raises DecodeError:
+        """Copy the next cstring into `key_buf`. One buffer is reused for every key."""
+        var start = self.pos
+        self._scan_nul()
+        var n = self.pos - start
+        if n > len(self.key_buf):
+            self.key_buf.resize(unsafe_uninit_length=n)
+        if n > 0:
+            unsafe_memcpy(
+                dest=self.key_buf.unsafe_ptr(),
+                src=self.data.unsafe_ptr().unsafe_offset(start),
+                count=n,
+            )
+        self.key_len = n
+        self.pos += 1
+
+    def key_loaded(self, literal: StaticString) -> Bool:
+        var lit = literal.as_bytes()
+        if len(lit) != self.key_len:
+            return False
+        var i = 0
+        while i < self.key_len:
+            if self.key_buf[i] != lit[i]:
+                return False
+            i += 1
+        return True
 
     def remaining(self) -> Int:
         return self.end - self.pos
@@ -117,6 +148,31 @@ struct WireReader[origin: ImmOrigin](Movable):
             return String(from_utf8=Span(unsafe_ptr=tmp.unsafe_ptr(), length=len(tmp)))
         except _:
             raise DecodeError(DecodeError.KIND_UTF8, start, n)
+
+    def key_lit(mut self, literal: StaticString) raises DecodeError -> Bool:
+        """Consume one cstring. Return true when its bytes equal `literal`."""
+        var lit = literal.as_bytes()
+        var i = 0
+        var matched = True
+        while i < len(lit):
+            if self.pos >= self.end:
+                raise DecodeError(DecodeError.KIND_EOF, self.pos, 1)
+            if self.data[self.pos] != lit[i]:
+                matched = False
+                break
+            self.pos += 1
+            i += 1
+        if matched:
+            if self.pos >= self.end:
+                raise DecodeError(DecodeError.KIND_EOF, self.pos, 1)
+            if self.data[self.pos] != Byte(0):
+                matched = False
+            else:
+                self.pos += 1
+                return True
+        self._scan_nul()
+        self.pos += 1
+        return False
 
     def key_is(mut self, literal: String) raises DecodeError -> Bool:
         """Consume one cstring. Return true when its bytes equal `literal`."""

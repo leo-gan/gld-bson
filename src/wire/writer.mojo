@@ -123,6 +123,45 @@ struct WireWriter(Movable):
         self.write_bytes(b)
         self.write_byte(Byte(0))
 
+    def write_ascii(mut self, s: StaticString):
+        self.write_bytes(s.as_bytes())
+
+    def write_type_lit(mut self, typ: Int, key: StaticString):
+        self.write_byte(Byte(typ))
+        self.write_ascii(key)
+        self.write_byte(Byte(0))
+
+    def write_bool_lit(mut self, key: StaticString, v: Bool):
+        self.write_type_lit(TY_BOOL, key)
+        if v:
+            self.write_byte(Byte(1))
+        else:
+            self.write_byte(Byte(0))
+
+    def write_i32_lit(mut self, key: StaticString, v: Int32):
+        self.write_type_lit(TY_INT32, key)
+        self.write_i32(v)
+
+    def write_i64_lit(mut self, key: StaticString, v: Int64):
+        self.write_type_lit(TY_INT64, key)
+        self.write_i64(v)
+
+    def write_f64_lit(mut self, key: StaticString, v: Float64):
+        self.write_type_lit(TY_DOUBLE, key)
+        self.write_f64(v)
+
+    def write_string_lit(mut self, key: StaticString, v: String):
+        self.write_type_lit(TY_STRING, key)
+        self.write_bson_string(v)
+
+    def begin_array_lit(mut self, key: StaticString) -> Int:
+        self.write_type_lit(TY_ARRAY, key)
+        return self.begin_document()
+
+    def begin_doc_lit(mut self, key: StaticString) -> Int:
+        self.write_type_lit(TY_DOCUMENT, key)
+        return self.begin_document()
+
     def write_index_cstring(mut self, n: Int):
         # Array keys are "0","1",… Digits go straight into the buffer.
         # A temporary list per element dominated telemetry encode.
